@@ -1,0 +1,7 @@
+# dsh-audio-rail bundle patch: one dual-face row in the web profile. The node
+# half (exports ".") owns the WASAPI capture helper process and the
+# /audio-rail/* routes; the `dsh.client` declaration serves the browser half
+# (exports "./client") which animates the turn-rail marks.
+- insert:
+    - id: ui-dsh-audio-rail
+      name: '@local/dsh-audio-rail'

@@ -1,0 +1,33 @@
+{
+  "name": "@local/dsh-audio-rail",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "DSH Web GUI 会话右侧快捷跳转锚点（turn rail）随音乐律动：宿主侧 WASAPI 环回采集 + FFT 频段经 SSE 推送，浏览器侧驱动锚点短条伸缩，宛如旋转 90° 的频谱柱。",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "bin",
+    "src",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-chat"
+      ]
+    }
+  },
+  "license": "MIT"
+}
