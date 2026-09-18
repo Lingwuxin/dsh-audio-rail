@@ -1,0 +1,57 @@
+# dsh-audio-rail
+
+[中文](README.md) | **English**
+
+A DeepSeek Harness (DSH) plugin that makes the quick-jump anchors (turn rail) on the right edge of the conversation page dance with whatever music your system is playing — like a spectrum analyzer rotated 90°.
+
+## Demo
+
+<video src="https://github.com/Lingwuxin/dsh-audio-rail/raw/main/docs/demo1.mp4" poster="https://raw.githubusercontent.com/Lingwuxin/dsh-audio-rail/main/docs/demo1.png" controls muted width="640"></video>
+
+If the video does not play, [open demo1.mp4 directly](docs/demo1.mp4).
+
+## How it works
+
+```
+┌─ bin/AudioRailCapture.exe ───┐  stdout JSON   ┌─ index.js (host) ─┐   SSE    ┌─ client.js (browser) ──┐
+│ WASAPI loopback capture of   │ ─────────────▶ │ /audio-rail/events │ ───────▶ │ one band per anchor;   │
+│ the default render endpoint  │                │ /audio-rail/status │          │ ::before scaleX pulses │
+│ FFT → 12 log bands @ 30 fps  │                └────────────────────┘          └────────────────────────┘
+└──────────────────────────────┘
+```
+
+- **Capture**: `src/AudioRailCapture.cs` (compiled with csc.exe, single zero-dependency binary) captures the system mix from the default render endpoint in loopback mode (WASAPI shared mode + `AUDCLNT_STREAMFLAGS_LOOPBACK`), then reduces it via FFT to 12 log-spaced bands (45 Hz–16 kHz). Normalization is relative to a ~1 s sliding-average loudness reference (-9/+17 dB window): sustained content rests at midline, transients punch upward, quiet passages dip — no peak-follower saturation. Frames stream as JSON lines at ~30 fps and decay to zero in silence.
+- **Host**: `index.js` registers `/audio-rail/events` (SSE) and `/audio-rail/status`. The capture process runs only while at least one page is subscribed, stops 15 s after the last client disconnects, and restarts with exponential backoff on crashes (exit code 3 = device hot-plug, recoverable).
+- **Browser**: `client.js` injects one CSS rule turning each mark bar's (`.…_mark::before`) `transform` into `translateY(-50%) scaleX(var(--dsh-audio-rail-scale, 1))`; an EventSource feeds band frames into a requestAnimationFrame loop with attack/release smoothing per anchor. Bass sits on the bottom anchor. Honors `prefers-reduced-motion` (the plugin stays fully inert). The host's own active/preview/busy mark styles are untouched — the pulse is a pure transform overlay.
+
+## Install
+
+Ask an agent in a DeepSeek Harness session to install the bundle, or manually:
+
+```
+dsh plugin --profile web add link:<path-to-this-clone>
+```
+
+The browser client hot-loads after installation — no page refresh needed.
+
+## Notes
+
+- On some Windows/runtime combinations `IMMDevice::Activate` returns `E_NOINTERFACE` for `IID_IAudioClient`; the helper therefore probes `IAudioClient3 → IAudioClient2 → IAudioClient1`, and every COM call below the device goes through raw vtable delegates (sidestepping a runtime marshaling bug that throws `InvalidCastException` on `Activate`).
+- High-rate devices (e.g. 192 kHz) automatically use a larger FFT to keep the low bands resolved.
+- Uninstalling or disabling the plugin closes the SSE stream and the capture process exits — nothing stays resident.
+- Windows only (WASAPI is the Windows audio stack).
+
+## Files
+
+| File | Role |
+| --- | --- |
+| `index.js` | Host half: routes + capture-process lifecycle |
+| `client.js` | Browser half: style injection + SSE + rAF animation |
+| `src/AudioRailCapture.cs` | WASAPI loopback capture + FFT (C# 5, builds with csc.exe) |
+| `bin/AudioRailCapture.exe` | Compiled binary shipped with the plugin |
+| `docs/demo1.mp4` | Demo video |
+| `cordis.patch.yml` | Bundle patch inserting the `ui-dsh-audio-rail` row |
+
+## License
+
+[MIT](LICENSE)
