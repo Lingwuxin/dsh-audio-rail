@@ -6,9 +6,9 @@
 
 ## 效果演示
 
-<video src="https://github.com/Lingwuxin/dsh-audio-rail/raw/main/docs/demo1.mp4" poster="https://raw.githubusercontent.com/Lingwuxin/dsh-audio-rail/main/docs/demo1.png" controls muted width="640"></video>
+![效果演示：右侧锚点随音乐律动](docs/demo1.gif)
 
-如果视频无法播放，[点这里直接查看 demo1.mp4](docs/demo1.mp4)。
+GitHub 会剥离手写 `<video>` 标签，所以用 GIF 内联自动循环播放；有声完整版见 [demo1.mp4](docs/demo1.mp4)。
 
 ## 原理
 
@@ -55,7 +55,8 @@ dsh plugin --profile web add link:<本仓库克隆路径>
 | `src/AudioRailCapture.cs` | WASAPI 环回采集 + FFT（C#5，csc.exe 可编译） |
 | `build.cmd` | 采集器一键编译脚本（调用系统自带 csc.exe） |
 | `bin/AudioRailCapture.exe` | 采集器编译产物（**不随仓库分发**，由 `build.cmd` 生成，`.gitignore` 忽略） |
-| `docs/demo1.mp4` | 效果演示视频 |
+| `docs/demo1.gif` | 效果演示（README 内联播放） |
+| `docs/demo1.mp4` | 效果演示完整视频 |
 | `cordis.patch.yml` | bundle 补丁，插入 `ui-dsh-audio-rail` 行 |
 
 ## 许可
