@@ -1,4 +1,5 @@
 node_modules/
+bin/
 *.log
 Thumbs.db
 .DS_Store

@@ -25,7 +25,13 @@
 
 ## 安装
 
-在已安装 DeepSeek Harness 的会话里，让 agent 执行 bundle 安装即可；或手动：
+克隆后先编译采集器（`build.cmd` 调用 Windows 自带的 .NET Framework csc.exe，无需安装任何依赖）：
+
+```
+build.cmd
+```
+
+然后在 DeepSeek Harness 会话里让 agent 安装 bundle，或手动：
 
 ```
 dsh plugin --profile web add link:<本仓库克隆路径>
@@ -47,7 +53,8 @@ dsh plugin --profile web add link:<本仓库克隆路径>
 | `index.js` | Host 半面：路由 + 采集进程生命周期 |
 | `client.js` | 浏览器半面：样式注入 + SSE + rAF 动画 |
 | `src/AudioRailCapture.cs` | WASAPI 环回采集 + FFT（C#5，csc.exe 可编译） |
-| `bin/AudioRailCapture.exe` | 编译产物（打包随插件分发） |
+| `build.cmd` | 采集器一键编译脚本（调用系统自带 csc.exe） |
+| `bin/AudioRailCapture.exe` | 采集器编译产物（**不随仓库分发**，由 `build.cmd` 生成，`.gitignore` 忽略） |
 | `docs/demo1.mp4` | 效果演示视频 |
 | `cordis.patch.yml` | bundle 补丁，插入 `ui-dsh-audio-rail` 行 |
 
