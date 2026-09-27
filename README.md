@@ -21,7 +21,7 @@ GitHub 会剥离手写 `<video>` 标签，所以用 GIF 内联自动循环播放
 
 - **采集**：`src/AudioRailCapture.cs`（csc.exe 编译，零依赖单文件）以环回模式捕获默认渲染端点的系统混音（WASAPI shared mode + `AUDCLNT_STREAMFLAGS_LOOPBACK`），FFT 后归约为 12 个对数分布频段（45 Hz–16 kHz）。归一化采用「约 1 秒滑窗均值」为基准的相对动态映射（-9/+17 dB 窗口）：持续内容停在中线、鼓点瞬态上冲、弱奏回落，不会像峰值跟踪那样一直顶格。约 30 fps 输出 JSON 行，静默时输出衰减到 0。
 - **宿主**：`index.js` 注册 `/audio-rail/events`（SSE）与 `/audio-rail/status`。有订阅者才启动采集进程，最后一个订阅者断开 15 秒后停止；崩溃按指数退避重启（设备热插拔 exit 3 可恢复）。
-- **浏览器**：`client.js` 注入一条 CSS 规则，把锚点短条（`.…_mark::before`）的 `transform` 变为 `translateY(-50%) scaleX(var(--dsh-audio-rail-scale, 1))`；EventSource 接收频段帧，rAF 循环内对每个锚点做攻击/释放平滑后写入 CSS 变量。低音在底部锚点。尊重 `prefers-reduced-motion`（此时完全不启用）。不影响锚点原有的 active/preview/busy 状态样式（宽度与颜色照旧，只是叠加缩放）。
+- **浏览器**：`client.js` 注入一条 CSS 规则，把锚点短条（`.…_mark::before`）的 `transform` 变为 `translateY(-50%) scaleX(var(--dsh-audio-rail-scale, .6))`；EventSource 接收频段帧，rAF 循环内对每个锚点做攻击/释放平滑后写入 CSS 变量。宿主的短条为固定 20px、以 scaleX 表达状态长度（.4 未加载 / .6 默认 / .9 预览 / 1 当前），插件把音频脉冲**乘在宿主状态系数之上**（上限 26px），状态样式完全保留。低音在底部锚点。尊重 `prefers-reduced-motion`（此时完全不启用）。
 
 ## 安装
 
