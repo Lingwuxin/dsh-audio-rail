@@ -2,7 +2,11 @@
 
 **中文** | [English](README.en.md)
 
+![dsh 兼容性](https://img.shields.io/badge/dsh-v0.1.7--rc.2-blue) ![许可证](https://img.shields.io/badge/license-MIT-green)
+
 让 DSH Web GUI 会话页面右侧的「快捷跳转锚点」（turn rail）随系统正在播放的音乐律动——像把频谱可视化的柱形旋转了 90°。
+
+> **兼容性声明**：当前版本（v1.0.1）仅针对 **dsh v0.1.7-rc.2** 适配验证。本插件依赖 `dsh-client-ui-chat` 的 TurnNavigator DOM 契约（`_marks` 容器内的 `_mark` 按钮、`data-index` 排序、固定 20px 短条、scaleX 状态系数）；DSH 升级若再次重构该组件，视觉效果可能失效（采集与 SSE 音频管线不受影响）。不同版本请自查该组件结构。
 
 ## 效果演示
 

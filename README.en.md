@@ -2,7 +2,11 @@
 
 [中文](README.md) | **English**
 
+![dsh compatibility](https://img.shields.io/badge/dsh-v0.1.7--rc.2-blue) ![license](https://img.shields.io/badge/license-MIT-green)
+
 A DeepSeek Harness (DSH) plugin that makes the quick-jump anchors (turn rail) on the right edge of the conversation page dance with whatever music your system is playing — like a spectrum analyzer rotated 90°.
+
+> **Compatibility**: the current release (v1.0.1) is adapted to and verified against **dsh v0.1.7-rc.2** only. The plugin relies on the TurnNavigator DOM contract of `dsh-client-ui-chat` (`_mark` buttons inside the `_marks` container, `data-index` ordering, fixed 20px bar, scaleX state factors); a DSH update that refactors that component can break the visual effect (the capture and SSE audio pipeline is unaffected). On any other dsh version, check that component first.
 
 ## Demo
 
